@@ -5,16 +5,15 @@ traditional villages.<br>
 Details for technical words are explained below.
 
 ## Project Structure
-* **3Dplot**: *some 3D visualization effects(testing)*.<br>
 * **Up_to_Domain**: *algorithm to calculate and generate reachableArea*.<br>
 * **calculate_denglinPoint**: *algorithm based on viewshed generated to calculate denglinPoint*.<br>
 * **static**: *directory for static resources eg. js files, pics, raw data, algorithm result etc*.<br>
 * **templates**: *directory to store html files*.<br>
-* **app.py**: *main entrance to run the system*.<br>
+* **run.py**: *main entrance to run the system*.<br>
 
 ## Quick Start
 ### Prerequisites
-* Python == 3.7.10
+* Python == 3.9.12
 * CUDA >= 10 <br>
 **WARNING**: Difference version of Python or other libs may cause install failed or other errors<br>
 

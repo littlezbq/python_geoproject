@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="bd05a42b-02d6-494b-822c-940b769f83d3" name="Changes" comment="&quot;添加.gitignore&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,16 +55,16 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/logs" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\projects\webGisProject-dev20220412\Up_to_Domain\village_edge_dev\logs" />
+      <recent name="D:\projects\webGisProject-dev20220412\Up_to_Domain\village_edge_dev\model_data" />
       <recent name="F:\Projects\Pytorch\webGisProject\static\datasets" />
       <recent name="F:\Projects\pytorch-flask-api-vue-elementUi_2021-11-4-1837\pytorch-flask-api-vue-elementUi\static\datasets" />
       <recent name="E:\WorkProject\pythonProj\pytorch-flask-api-vue-elementUi\templates" />
-      <recent name="E:\WorkProject\pythonProj\pytorch-flask-api-vue-elementUi" />
-      <recent name="E:\WorkProject\pythonProj\pytorch-flask-api-vue-elementUi\static\js" />
     </key>
   </component>
   <component name="RunManager">
@@ -112,7 +113,21 @@
       <option name="project" value="LOCAL" />
       <updated>1654573094221</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="&quot;添加.gitignore&quot;">
+      <created>1654578442464</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1654578442464</updated>
+    </task>
+    <task id="LOCAL-00004" summary="&quot;添加.gitignore&quot;">
+      <created>1654578447950</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1654578447950</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
