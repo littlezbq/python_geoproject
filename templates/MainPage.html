@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="..\static\js\vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="..\static\js\element-ui@2.15.5\lib\theme-chalk\index.css">
+    <!-- 引入组件库 -->
+    <script src=".\static\js\element-ui@2.15.5\lib\index.js"></script>
+    <title>关键点位</title>
+
+    <style>
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="mPage" >
+        <el-container>
+            <el-header  style="background-color: #545c64">{% include "Header.html" %}</el-header>
+
+            <el-main>
+                <div>
+                    <h1>传统村落绿色宜居营建基因挖掘系统</h1>
+<!--                    <p>Author：the light of 705.</p>-->
+                    <p>Author：</p>
+<!--                    <a href="#">Yeah</a>-->
+                    <img src="../static/pic/Xian_Old.jpeg" alt=""> </img>
+                </div>
+            </el-main>
+
+            <el-footer>{% include "Footer.html" %}</el-footer>
+        </el-container>
+    </div>
+</body>
+
+<script type="text/javascript">
+        var mPage = new Vue({
+            el: '#mPage',
+            data() {
+                return {
+                    activeIndex: '0'
+                        };
+                    }
+        })
+</script>
+</html>
