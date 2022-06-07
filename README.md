@@ -19,7 +19,7 @@ Details for technical words are explained below.
 **WARNING**: Difference version of Python or other libs may cause install failed or other errors<br>
 
 First, create a virtual environment or install dependencies directly with:<br>
-``` pip3 install -r requirements.txt``` but not still modifing
+``` pip3 install -r requirements.txt``` but still modifing
 
 ### Data preparation
 There are two main data source in the project. First is the **remote and DEM** data of the village waiting for analyze; Second is the data for **village edge detection module**.
