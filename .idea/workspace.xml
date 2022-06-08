@@ -4,9 +4,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bd05a42b-02d6-494b-822c-940b769f83d3" name="Changes" comment="&quot;添加.gitignore&quot;">
+    <list default="true" id="bd05a42b-02d6-494b-822c-940b769f83d3" name="Changes" comment="&quot;修改README，添加requirements.txt&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/config/UpToDomainConsts.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/config/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/cal_accessarea/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/interfaces/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/models/up_to_domain.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/interfaces/up_to_domain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/ascensionpoint_generate/cal_ascensionpoints/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/utils/cnt_fn.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/cal_accessarea/cnt_fn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/edge_detect.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/get_miou.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/get_miou.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/train_medical.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/train_medical.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/unet.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/unet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/dataloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/dataloader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/dataloader_medical.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/dataloader_medical.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/utils_fit.py" beforeDir="false" afterPath="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/utils/utils_fit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ascensionpoint_generate/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/config/DenglinConsts.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/config/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/models/cal_denglin.py" beforeDir="false" afterPath="$PROJECT_DIR$/ascensionpoint_generate/interfaces/interface_visionpoint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/utils/cdld.py" beforeDir="false" afterPath="$PROJECT_DIR$/ascensionpoint_generate/cal_ascensionpoints/cdld.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/utils/domainPointIndex.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/utils/test.tif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/calculate_denglinPoint/utils/testCalculateDenglinPoint.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/commonutils/tools.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,20 +82,42 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/logs" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\projects\webGisProject_backEnd" />
+      <recent name="D:\projects\webGisProject-dev20220412\Up_to_Domain\village_edge_dev\VOCdevkit" />
       <recent name="D:\projects\webGisProject-dev20220412\Up_to_Domain\village_edge_dev\logs" />
       <recent name="D:\projects\webGisProject-dev20220412\Up_to_Domain\village_edge_dev\model_data" />
       <recent name="F:\Projects\Pytorch\webGisProject\static\datasets" />
-      <recent name="F:\Projects\pytorch-flask-api-vue-elementUi_2021-11-4-1837\pytorch-flask-api-vue-elementUi\static\datasets" />
-      <recent name="E:\WorkProject\pythonProj\pytorch-flask-api-vue-elementUi\templates" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.run">
+    <configuration name="edge_detect" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="webGisProject_backEnd" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/interfaces" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/interfaces/edge_detect.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="run" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="webGisProject_backEnd" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -79,7 +128,6 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -89,6 +137,60 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="webGisProject_backEnd" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="webGisProject_backEnd" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Up_to_Domain/village_edge_dev" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Up_to_Domain/village_edge_dev/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.edge_detect" />
+      <item itemvalue="Python.run" />
+      <item itemvalue="Python.test" />
+      <item itemvalue="Python.test (1)" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.test (1)" />
+        <item itemvalue="Python.test" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -127,7 +229,14 @@
       <option name="project" value="LOCAL" />
       <updated>1654578447950</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="&quot;修改README，添加requirements.txt&quot;">
+      <created>1654579150751</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1654579150751</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -147,15 +256,21 @@
     </ignored-roots>
     <MESSAGE value="&quot;初始化项目&quot;" />
     <MESSAGE value="&quot;添加.gitignore&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;添加.gitignore&quot;" />
+    <MESSAGE value="&quot;修改README，添加requirements.txt&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;修改README，添加requirements.txt&quot;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/calculate_denglinPoint/models/cal_denglin.py</url>
-          <line>133</line>
-          <option name="timeStamp" value="11" />
+          <url>file://$PROJECT_DIR$/test.py</url>
+          <line>3</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Up_to_Domain/village_edge_dev/unet.py</url>
+          <line>12</line>
+          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

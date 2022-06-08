@@ -1,9 +1,12 @@
 import torch
+from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 from nets.unet_training import CE_Loss, Dice_loss, Focal_Loss
 from tqdm import tqdm
 
-from utils.utils import get_lr
-from utils.utils_metrics import f_score
+from tools import get_lr
+from utils_metrics import f_score
 
 
 def fit_one_epoch(model_train, model, loss_history, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, Epoch, cuda, dice_loss, focal_loss, cls_weights, num_classes):

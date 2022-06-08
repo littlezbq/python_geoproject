@@ -7,10 +7,12 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import cv2 as cv
 from pathlib import Path
-from Up_to_Domain.utils.cnt_fn import CountUptoDomain, Point
-from Up_to_Domain.village_edge_dev.edge_detect import interface_villageEdgeDect
-import Up_to_Domain.config.UpToDomainConsts as UpToDomainConsts
-import calculate_denglinPoint.config.DenglinConsts as DenglinConsts
+from Up_to_Domain.cal_accessarea.cnt_fn import CountUptoDomain, Point
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from village_edge_dev.interfaces import edge_detect
+import config.params as param
+from ascensionpoint_generate.cal_ascensionpoints.cdld import Tools
 
 def interface_drawRawData(dem_path, remote_path):
     """
@@ -19,20 +21,22 @@ def interface_drawRawData(dem_path, remote_path):
     :param remote_path: 输入遥感数据路径
     :return: 将其绘制后的图像路径及图像的中心返回，并可视化到前端页面
     """
-    # 若需上传至前端，修改为'../static/result/reachableArea/rawImg/dem.png'
-    rawDem = os.path.join(UpToDomainConsts.RAWIMG_PATH,
+
+    rawDem = os.path.join(param.RAWIMG_PATH,
                           os.path.basename(dem_path).split('.')[0] + 'Dem.png')
 
-    # 若需上传至前端，修改为'../static/result/reachableArea/rawImg/remote.png'
-    rawRemote = os.path.join(UpToDomainConsts.RAWIMG_PATH,
+    rawRemote = os.path.join(param.RAWIMG_PATH,
                              os.path.basename(remote_path).split('.')[0] + 'Remote.png')
+
+    # 路径存在校验
+    if os.path.exists(param.RAWIMG_PATH) is False:
+        os.makedirs(param.RAWIMG_PATH)
 
     # 原始dem
     fig1, ax1 = plt.subplots()
     dem = np.array(Image.open(dem_path))
 
     # 读取dem并获取中心点坐标
-    from calculate_denglinPoint.utils.cdld import Tools
     tl = Tools()
     im_data, im_geotrans, im_width, im_height = tl.read_dem(filename=dem_path)
     x_mean, y_mean = im_width / 2.0, im_height / 2.0
@@ -83,7 +87,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
 
     # eg. ../static/result/reachableArea/reachableImg/SX3_005_QMC
     result_accessdomain_basepath = "".join(
-        (os.path.join(UpToDomainConsts.REACHABLEIMG_PATH, os.path.basename(dem_path).split('.')[0])))
+        (os.path.join(param.REACHABLEIMG_PATH, os.path.basename(dem_path).split('.')[0])))
 
     # eg. ../static/result/reachableArea/reachableImg/SX3_005_QMC/30
     timelimit_accessdomain_path = os.path.join(result_accessdomain_basepath,str(timelimit))
@@ -100,14 +104,14 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
     # Only one dem file has one time_matrix.txt, it has the time_matrix of total points
     time_matrix_path = os.path.join(result_accessdomain_basepath, "time_matrix.txt")
 
-    viewshedmiddle_basepath = os.path.join(DenglinConsts.VIEWSHED_PATH, 
+    viewshedmiddle_basepath = os.path.join(param.VIEWSHED_PATH,
                                         os.path.join(os.path.basename(dem_path).split('.')[0],str(timelimit)))
 
 
-    if Path(result_accessdomain_basepath).exists() is False:
+    if os.path.exists(result_accessdomain_basepath) is False:
         os.makedirs(result_accessdomain_basepath)
 
-    if Path(timelimit_accessdomain_path).exists() is False:
+    if os.path.exists(timelimit_accessdomain_path) is False:
         os.makedirs(timelimit_accessdomain_path)
 
     # Change the accessdomain from minutes to hour
@@ -116,7 +120,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
     st = time.time()
 
     # 计算村落中心点
-    [x, y] = interface_villageEdgeDect(remote_path)
+    [x, y] = edge_detect.interface_villageEdgeDect(remote_path)
 
     ed = time.time()
 
@@ -139,7 +143,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
         noted: timelimit has to be transform to hour
     '''
     st = time.time()
-    if Path(time_matrix_path).exists() is False:
+    if os.path.exists(time_matrix_path) is False:
         cnt_uptodomain = CountUptoDomain(dem_path, centerPoint, demAxis)
 
         # distance_matrix = cnt_uptodomain.get_distance_matrix()
@@ -176,17 +180,14 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
     np.savetxt(os.path.join(viewshedmiddle_basepath,"accessdomainpoint_index.txt"), index, fmt="%d")
 
     # Transform relative coords to longtitude/latitude
-    from calculate_denglinPoint.utils.cdld import Tools
     tl = Tools()
     centerpoint, im_geotrans = tl.coordinateTransform(dem_path, dem_x, dem_y)
-
 
     # 创建在前端显示的区域范围
     west = im_geotrans[0]
     south = im_geotrans[3] + dem.size[1]*im_geotrans[-1]
     east = im_geotrans[0] + dem.size[0]*im_geotrans[1]
     north = im_geotrans[3]
-
 
     # Generate the accessdomain
     kedayu_result = Image.fromarray(kedayu_matrix).convert('RGB')
@@ -195,16 +196,3 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
 
     # Return the accessdomain
     return centerpoint, accessdomain_path, [west, south, east, north]
-
-if __name__ == '__main__':
-    dem_path = 'static/datasets/SX3_005_QMC.tif'
-    remote_path = 'static/datasets/SX3_005_QMC.png'
-
-    # from pathlib import Path
-    # print(Path.cwd())
-    timelimit = 1.5
-
-    interface_uptodomain(dem_path, remote_path, timelimit)
-
-    # interface_drawRawData(dem_path, remote_path)
-

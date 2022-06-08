@@ -8,9 +8,9 @@ from torch.utils.data import DataLoader
 
 from nets.unet import Unet
 from nets.unet_training import weights_init
-from utils.callbacks import LossHistory
-from utils.dataloader import UnetDataset, unet_dataset_collate
-from utils.utils_fit import fit_one_epoch
+from commonutils.callbacks import LossHistory
+from commonutils.dataloader import UnetDataset, unet_dataset_collate
+from commonutils.utils_fit import fit_one_epoch
 
 '''
 训练自己的语义分割模型一定需要注意以下几点：

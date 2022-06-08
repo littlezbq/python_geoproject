@@ -12,8 +12,8 @@ from PIL import Image
 from pathlib import Path
 import cv2 as cv
 from sklearn import preprocessing
-import calculate_denglinPoint.config.DenglinConsts as DenglinConsts
-import Up_to_Domain.config.UpToDomainConsts as UpToDomainConsts
+import config.params as param
+
 
 class Tools:
     def __init__(self):
@@ -94,7 +94,7 @@ class Tools:
             )
             point.append(result)
         concat_result = pd.concat(point, axis=0)
-        
+
         return concat_result
 
     def save_file(self, point, savename):
@@ -107,8 +107,9 @@ class Tools:
         np.savetxt(savename, point_sort, fmt="%d %d %ld")
 
         return point_sort
-    
-class calculateDenglin(Tools):
+
+
+class CalculateVisionPoint(Tools):
     def __init__(self, x_y, filename, timelimit):
         """
         计算一个可达域内所有点集的可视域并按照可视域大小排列
@@ -129,17 +130,17 @@ class calculateDenglin(Tools):
         # 不含后缀的文件名
         self.FILENAME = os.path.basename(self.filename).split('.')[0]
 
-        self.viewsheds_path = os.path.join(DenglinConsts.VIEWSHED_PATH,
-                                                  os.path.join(self.FILENAME, str(self.timelimit)))
-        self.result_savepath = os.path.join(DenglinConsts.ASCENSIONLIST_SAVEPATH,
+        self.viewsheds_path = os.path.join(param.VIEWSHED_PATH,
+                                           os.path.join(self.FILENAME, str(self.timelimit)))
+        self.result_savepath = os.path.join(param.ASCENSIONLIST_SAVEPATH,
                                             os.path.join(self.FILENAME, str(self.timelimit)))
         self.ascensionlist_path = os.path.join(self.result_savepath, "ascensionpoint.txt")
 
-    def calculateDenlin_map(self, divideSpace, demAxis):
+    def calculate_ascensionpoint_map(self, divideSpace, demAxis):
         """
         2.0：使用map()方法重构
         """
-    
+
         """
         If the viewShedsPath or the resultSavePath dosen't exists, create the directory
         """
@@ -147,7 +148,7 @@ class calculateDenglin(Tools):
             os.makedirs(self.viewsheds_path)
         if Path(self.result_savepath).exists() is False:
             os.makedirs(self.result_savepath)
-    
+
         """
         If viewshed files in this area is first calculated, then there's no list of denglinPoint is created, so run
         the code below
@@ -178,49 +179,49 @@ class calculateDenglin(Tools):
         baseXList = list(range(minX, maxX, discur))
         baseYList = list(range(minY, maxY, discur))
 
-        baseCorrds = np.array([[i,k] for i in baseXList for k in baseYList])
+        baseCorrds = np.array([[i, k] for i in baseXList for k in baseYList])
 
         # Check if baseCorrds in domainPointLists. If in, then add to the simplifed list
         for corrd in baseCorrds:
-            if (corrd == self.x_y).all(1).any() :
+            if (corrd == self.x_y).all(1).any():
                 domainPointsSimplifed.append(corrd)
 
         # Calculate the point in domainPointsSimplifed list using map()
-        result_list = list(map(self.cal, domainPointsSimplifed))
+        result_list = list(map(self.cal_map, domainPointsSimplifed))
 
         result_sort = self.save_file(result_list, self.ascensionlist_path)
 
-    # 将登临点的可视域文件复制到结果文件夹中,默认最多可以展示前100个
+        # 将登临点的可视域文件复制到结果文件夹中,默认最多可以展示前100个
 
         for i in range(100):
             denglinPointViewShed = Image.open(os.path.join(self.viewsheds_path,
 
-                                                        "".join((str(result_sort[i][0]),
-                                                                '_', str(result_sort[i][1]),'.tif'))))
+                                                           "".join((str(result_sort[i][0]),
+                                                                    '_', str(result_sort[i][1]), '.tif'))))
             denglinPoint_viewshed_path = os.path.join(self.result_savepath,
-                                                    "".join((str(result_sort[i][0]),
-                                                                '_', str(result_sort[i][1]),'ascensionpoint_viewshed.png')))
+                                                      "".join((str(result_sort[i][0]),
+                                                               '_', str(result_sort[i][1]),
+                                                               'ascensionpoint_viewshed.png')))
             denglinPointViewShed.save(denglinPoint_viewshed_path)
 
         #   保留前100个可视域文件
         self.saveNo_100Files()
-            # 加载本地已经计算出的登临点列表
+        # 加载本地已经计算出的登临点列表
         # else:
         #     result_sort = np.loadtxt(os.path.join(self.result_savepath, "ascensionpoint.txt"))
-    
-    
+
         end = time.time()
 
-        print("Using {:.2f}".format(end-start))
-    
+        print("Using {:.2f}".format(end - start))
+
         return np.array(result_sort[0:100])
-    
+
     """
-        Calculate one corrd viewshed
+        Calculate one corrd viewshed(base on map method)
     """
-    
-    def cal(self, point):
-        saveName = os.path.join(self.viewsheds_path,"".join((str(point[0]), '_', str(point[1]), '.tif')))
+
+    def cal_map(self, point):
+        saveName = os.path.join(self.viewsheds_path, "".join((str(point[0]), '_', str(point[1]), '.tif')))
 
         start_longtitude = self.im_geotrans[0]
         start_latitude = self.im_geotrans[3]
@@ -232,40 +233,42 @@ class calculateDenglin(Tools):
 
         px = start_longtitude + x * index_longitude + y * self.im_geotrans[2]
         py = start_latitude + x * self.im_geotrans[4] + y * index_latitude
-    
+
         self.get_viewshed_file(self.filename, saveName, px, py)
-    
+
         # Calculate the num of viewshed
         totalViewshedPoint = self.caculate_target(saveName)
-    
+
         # Save the coord and num of viewshed into list
         return [x, y, totalViewshedPoint]
-    
-    def calculateDenlin(self, divideSpace, demAxis):
-        '''
-            优化后的多线程
-        '''
-        if Path(self.viewsheds_path).exists() is False:
+
+    def calculate_ascensionpoint_mp(self, divideSpace, demAxis):
+        """
+        Using
+        Multiprocess method after optimization: First need to simplify the self.x_y list.Not every point in the
+        reachable area need to be calculated, points in particular parts could have nearly the same viewshed(eg. 2
+        points locate between less than 50m).Therefore, we assume that if one point are in the square of another
+        point(square area is 500m*500m),then this point can be jumped over.
+        """
+        if os.path.exists(self.viewsheds_path) is False:
             os.makedirs(self.viewsheds_path)
-        if Path(self.result_savepath).exists() is False:
+        if os.path.exists(self.result_savepath) is False:
             os.makedirs(self.result_savepath)
 
         start = time.time()
 
-        """
-            First need to simplify the self.x_y list.Not every point in the reachable area need to be calculated, points
-            in particular parts could have nearly the same viewshed(eg. 2 points locate between less than 50m).Therefore,
-            we assume that if one point are in the square of another point(square area is 500m*500m),then this point can
-            be jumped over.
 
-        """
+        # Check if viewshed files already generated
+        for file in os.listdir(self.viewsheds_path):
+            if file.endswith(".tif") is True and os.path.exists(self.ascensionlist_path) is True:
+                result = np.loadtxt(self.ascensionlist_path)
+                return np.array(result[0:100])
+
         domainPointsSimplifed = []
 
         # 设置间隔距离，单位为米
         disreal = divideSpace
         discur = int(disreal / demAxis)
-        # Should be in this way
-        # discur = int(disreal / max(xais,yais))
 
         # Getting the min and max value for row and col
         maxX, maxY = np.max(self.x_y, axis=0)
@@ -275,50 +278,49 @@ class calculateDenglin(Tools):
         baseXList = list(range(minX, maxX, discur))
         baseYList = list(range(minY, maxY, discur))
 
-        baseCorrds = np.array([[i,k] for i in baseXList for k in baseYList])
+        baseCorrds = np.array([[i, k] for i in baseXList for k in baseYList])
 
         # Check if baseCorrds in domainPointLists. If in, then add to the simplifed list
         for corrd in baseCorrds:
-            if (corrd == self.x_y).all(1).any() :
+            if (corrd == self.x_y).all(1).any():
                 domainPointsSimplifed.append(corrd)
 
         with mp.Pool() as pool:
             x_y_compute = domainPointsSimplifed
-        
-            func = partial(self.calculate_denglin, self.filename, self.viewsheds_path,
-                            self.im_geotrans)
+
+            func = partial(self.cal_mp, self.filename, self.viewsheds_path,
+                           self.im_geotrans)
 
             print("Calculate Begin...")
 
             point = pool.map(func, x_y_compute)
 
             print()
-            
+
             end = time.time()
-            print("Using {:.2f} seconds".format((end-start)))
+            print("Using {:.2f} seconds".format((end - start)))
 
         result_sort = self.save_file(point, self.ascensionlist_path)
 
         # 将登临点的可视域文件复制到结果文件夹中,默认最多可以展示前100个
         for i in range(100):
             denglinPointViewShed = Image.open(os.path.join(self.viewsheds_path,
-                                                        "".join((str(result_sort[i][0]),
-                                                                '_', str(result_sort[i][1]),'.tif')))).convert('RGB')
+                                                           "".join((str(result_sort[i][0]),
+                                                                    '_', str(result_sort[i][1]), '.tif')))).convert(
+                'RGB')
             denglinPoint_viewshed_path = os.path.join(self.result_savepath,
-                                                    "".join((str(result_sort[i][0]),
-                                                                '_', str(result_sort[i][1]),'ascensionpoint_viewshed.png')))
+                                                      "".join((str(result_sort[i][0]),
+                                                               '_', str(result_sort[i][1]),
+                                                               'ascensionpoint_viewshed.png')))
             denglinPointViewShed.save(denglinPoint_viewshed_path)
 
-  
         # 加载本地已经计算出的登临点列表
         # else:
         #     result_sort = np.loadtxt(os.path.join(self.result_savepath, "ascensionpoint.txt"))
 
         return np.array(result_sort[0:100])
 
-
-
-    def calculate_denglin(self, filename, middlepath, im_geotrans, pos):
+    def cal_mp(self, filename, middlepath, im_geotrans, pos):
         """
             计算一个点的可视域
             filename：输入文件名
@@ -344,7 +346,7 @@ class calculateDenglin(Tools):
         # 将该点的相对坐标和可视点大小存入列表    
         return [x, y, total_viewshed_point]
 
-    def calculateBaolu(self, timelimit):
+    def calculate_exposivepoint(self, timelimit):
         """
             timelimit: 步行时长，单位为分钟
             exposiveNum: 需要显示的暴露点数量
@@ -353,7 +355,7 @@ class calculateDenglin(Tools):
         """
 
         # 读取时间矩阵，重新导入可达域
-        timeMatrixPath = os.path.join(UpToDomainConsts.REACHABLEIMG_PATH, self.FILENAME)
+        timeMatrixPath = os.path.join(param.REACHABLEIMG_PATH, self.FILENAME)
         timeMatrix = np.loadtxt(timeMatrixPath + "/time_matrix.txt")
         ts_3600 = timeMatrix < (timelimit / 60.0)
 
@@ -396,10 +398,5 @@ class calculateDenglin(Tools):
             y = ascensionlist[i][1]
             # 删除该文件
             os.remove(os.path.join(self.viewsheds_path, "".join((str(int(x)), '_', str(int(y)), '.tif'))))
-        
+
         print("Deleted extra viewshed files!")
-
-
-
-
-   
