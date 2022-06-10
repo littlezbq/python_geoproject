@@ -370,8 +370,6 @@ class CalculateVisionPoint(Tools):
                     viewshed = np.array(Image.open(currentfile))
                     #   将可达域内各视点的可视域叠加
                     result += viewshed
-                else:
-                    print(viewshedFile)
         except:
             print("No viewshed file detected")
             exit(-1)

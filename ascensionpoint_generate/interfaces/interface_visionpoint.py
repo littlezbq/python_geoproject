@@ -1,11 +1,13 @@
 from PIL import Image
 from pathlib import Path
 import sys
+
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from cal_ascensionpoints.cdld import CalculateVisionPoint,Tools
+from cal_ascensionpoints.cdld import CalculateVisionPoint, Tools
 import numpy as np
 import os
 import config.params as param
+
 
 def interface_cal_ascensionpoint(dem_path, denglin_num, time_limit, divideSpace, demAxis):
     """
@@ -59,7 +61,7 @@ def interface_cal_ascensionpoint(dem_path, denglin_num, time_limit, divideSpace,
     # 保存前ascensionpoint_num个登临点的可视域列表
     ascensionpoint_viewshedpathlist = ["".join(
         (ascensionpoint_basepath, '/', str(int(point[0])), '_', str(int(point[1])), 'ascensionpoint_viewshed.png')) for
-                                       point in ascensionpoint_numlist_relative]
+        point in ascensionpoint_numlist_relative]
 
     # 转换坐标为经纬度
     tl = Tools()
@@ -107,7 +109,7 @@ def interface_cal_exposivepoint(dem_path, cur_dis, exposive_num):
 
     # 读取可达域内点的列表
     accessarea_point_path = os.path.join(param.VIEWSHED_PATH,
-                                    "".join((os.path.basename(dem_path).split('.')[0], "/", str(cur_dis))))
+                                         "".join((os.path.basename(dem_path).split('.')[0], "/", str(cur_dis))))
 
     x_y = np.loadtxt(accessarea_point_path + "/accessdomainpoint_index.txt", dtype=int)
 
@@ -115,32 +117,37 @@ def interface_cal_exposivepoint(dem_path, cur_dis, exposive_num):
     cal_as = CalculateVisionPoint(x_y, dem_path, cur_dis)
     result_baolu = cal_as.calculate_exposivepoint(cur_dis)
 
+    result_exposive_combine = Image.fromarray(result_baolu).convert('RGB')
+    result_exposive_combine.save(os.path.join(accessarea_point_path, "result_exposive_combine.png"))
+
+
+
     # 获取叠加可视域图中的暴露点坐标
     exposivepoints_numlist_relative = np.argwhere(result_baolu == 255)
 
-    sum = 0
-
     tl = Tools()
     exposivepoint_numlist_absolute = []
-    for exposivepoint in exposivepoints_numlist_relative:
-        if (sum < int(exposive_num)):
-            # 相对坐标转换为经纬度
-            transpoint, _ = tl.coordinateTransform(dem_path, exposivepoint[0], exposivepoint[1])
-            exposivepoint_numlist_absolute.append(transpoint)
-            sum += 1
+    # Translate relative corrds to absolute corrds(longtitude & latitude)
+    for tmp_num in range(exposive_num):
+        exposive_point = exposivepoints_numlist_relative[tmp_num]
+        transpoint, _ = tl.coordinateTransform(dem_path, exposive_point[0], exposive_point[1])
+        exposivepoint_numlist_absolute.append(transpoint)
 
-    # 获取哪些点能看到第一个暴露点
+    # Get which point can "see" the exposive_point
     parent_list = []
     viewshed_path = os.path.join(param.VIEWSHED_PATH,
                                  os.path.join(os.path.basename(dem_path).split(".")[0], str(cur_dis)))
-    exposivepoint = [int(exposivepoints_numlist_relative[0][0]), int(exposivepoints_numlist_relative[0][1])]
-    for file in os.listdir(viewshed_path):
-        if file.endswith("tif"):
-            viewsheddata = np.array(Image.open(os.path.join(viewshed_path, file)))
-            if viewsheddata[exposivepoint[0], exposivepoint[1]] == 255:
-                parentName = file.split('.tif')[0]
-                parent_list.append([parentName[0], parentName[1]])
+    for num in range(exposive_num):
+        # Get current exposive_point from exposivepoints_numlist_relative
+        exposive_point = exposivepoints_numlist_relative[num]
+        for file in os.listdir(viewshed_path):
+            if file.endswith("tif"):
+                viewshed_data = np.array(Image.open(os.path.join(viewshed_path, file)))
+                if viewshed_data[exposive_point[0], exposive_point[1]] == 255:
+                    parent_name = file.split('.tif')[0].split('_')
+                    parent_list.append([parent_name[0], parent_name[1]])
 
-    np.savetxt(viewshed_path + "exposivepoint_parent.txt", np.array(parent_list), fmt="%s")
+        np.savetxt(os.path.join(viewshed_path, "exposivepoint_parent.txt" + str(num)), np.array(parent_list), fmt="%s")
+        parent_list.clear()
 
     return exposivepoint_numlist_absolute
