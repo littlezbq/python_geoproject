@@ -3,8 +3,10 @@ from Up_to_Domain.interfaces import up_to_domain
 from ascensionpoint_generate.interfaces import interface_visionpoint
 from flask_cors import CORS
 
+# app = Flask(__name__, template_folder="static/templates", static_folder="static", static_url_path="")
 app = Flask(__name__)
-CORS(app)
+app.config.from_object(__name__)
+CORS(app, resources={r'/*': {'origins': '*'}}, supports_credentials=True)
 app.jinja_env.variable_start_string = '{['
 app.jinja_env.variable_end_string = ']}'
 
@@ -13,7 +15,7 @@ app.jinja_env.variable_end_string = ']}'
 
 @app.route("/", methods=['GET'])
 def mainPage():
-    return render_template('MainPage.html')
+    return render_template('index.html')
 
 
 @app.route("/autoSortingPage", methods=['GET'])
@@ -77,6 +79,8 @@ def distantCalc():
     remotePath = './static/datasets/' + cur_file_name + '.png'
 
     centerpoint, accessdomain_path, location = up_to_domain.interface_uptodomain(dem_path, remotePath, dis, demAxis)
+
+    print(accessdomain_path,location)
 
     # if isinstance(accesspoints,np.ndarray):
     #     accesspointsUse = accesspoints.tolist()

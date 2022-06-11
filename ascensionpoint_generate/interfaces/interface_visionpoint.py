@@ -1,3 +1,4 @@
+import cv2
 from PIL import Image
 from pathlib import Path
 import sys
@@ -120,9 +121,7 @@ def interface_cal_exposivepoint(dem_path, cur_dis, exposive_num):
     result_exposive_combine = Image.fromarray(result_baolu).convert('RGB')
     result_exposive_combine.save(os.path.join(accessarea_point_path, "result_exposive_combine.png"))
 
-
-
-    # 获取叠加可视域图中的暴露点坐标
+    # Get the exposive_point corrd in the combined viewshed graph
     exposivepoints_numlist_relative = np.argwhere(result_baolu == 255)
 
     tl = Tools()
@@ -134,20 +133,33 @@ def interface_cal_exposivepoint(dem_path, cur_dis, exposive_num):
         exposivepoint_numlist_absolute.append(transpoint)
 
     # Get which point can "see" the exposive_point
-    parent_list = []
     viewshed_path = os.path.join(param.VIEWSHED_PATH,
                                  os.path.join(os.path.basename(dem_path).split(".")[0], str(cur_dis)))
     for num in range(exposive_num):
+        # Create an array to display how many points can see the exposive_point
+        exposive_parent_array = np.ones_like(np.array(Image.open(dem_path)))
+
         # Get current exposive_point from exposivepoints_numlist_relative
+        tmp_list = []
         exposive_point = exposivepoints_numlist_relative[num]
+
         for file in os.listdir(viewshed_path):
             if file.endswith("tif"):
                 viewshed_data = np.array(Image.open(os.path.join(viewshed_path, file)))
+                '''
+                    Find if the exposive_point can be seen in viewshed, then the visionpoint which generates this 
+                    viewshed is the parent point of this exposive_point
+                '''
+
                 if viewshed_data[exposive_point[0], exposive_point[1]] == 255:
                     parent_name = file.split('.tif')[0].split('_')
-                    parent_list.append([parent_name[0], parent_name[1]])
+                    tmp_list.append(parent_name)
 
-        np.savetxt(os.path.join(viewshed_path, "exposivepoint_parent.txt" + str(num)), np.array(parent_list), fmt="%s")
-        parent_list.clear()
+                    exposive_parent_array[tuple(map(int, parent_name))] = 255
+
+        np.savetxt(os.path.join(viewshed_path, "exposivepoint_parent" + str(num) + ".txt"), np.array(tmp_list),
+                   fmt="%s")
+        cv2.imwrite(os.path.join(viewshed_path, "exposivepoint_parent_array" + str(num) + ".png"),
+                    exposive_parent_array)
 
     return exposivepoint_numlist_absolute
