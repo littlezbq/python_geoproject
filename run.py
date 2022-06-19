@@ -123,12 +123,13 @@ def calExposivePoint():
     global timelimit
 
     dem_path = './static/datasets/' + cur_file_name + '.tif'
-    exposivePointNum = request.json['exposivePointNum']
+    exposivePointNum = int(request.json['exposivePointNum'])
 
-    exposivepoint_numlist_absolute = interface_visionpoint.interface_cal_exposivepoint(dem_path, timelimit, exposivePointNum)
+    exposivepoint_numlist_absolute, exposive_result_path = interface_visionpoint.interface_cal_exposivepoint(dem_path, timelimit, exposivePointNum)
 
     result = make_response(jsonify({
         'result': {'exposivepoint_numlist_absolute': exposivepoint_numlist_absolute,
+                   'exposive_result_path': exposive_result_path,
                    'code': 0},
     }))
 
@@ -147,6 +148,6 @@ if __name__ == '__main__':
 
     # from commonutils.tools import  Tools
     # tl = Tools()
-
+    #
     # tl.clear_cache()
     # tl.clear_result(0)

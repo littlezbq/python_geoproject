@@ -47,7 +47,7 @@ class Tools:
         gdal.ViewshedGenerate(srcBand=band, driverName='GTiff', targetRasterName=save_name, creationOptions=None,
                               observerX=x, observerY=y,
                               observerHeight=2, targetHeight=0, visibleVal=255, invisibleVal=0, outOfRangeVal=0,
-                              noDataVal=0, dfCurvCoeff=0.85714, mode=0, maxDistance=0)
+                              noDataVal=0, dfCurvCoeff=0.85714, mode=0, maxDistance=50000)
 
     def caculate_target(self, filename):
         """
@@ -330,8 +330,9 @@ class CalculateVisionPoint(Tools):
         index_longitude = im_geotrans[1]
         index_latitude = im_geotrans[5]
 
-        x = pos[0]
-        y = pos[1]
+        # 传入的pos第一维是行数，第二维是列数，因此需要变换一下坐标，满足坐标转换时的经纬度顺序
+        x = pos[1]
+        y = pos[0]
 
         px = start_longtitude + x * index_longitude + y * im_geotrans[2]
         py = start_latitude + x * im_geotrans[4] + y * index_latitude

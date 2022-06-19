@@ -1,6 +1,7 @@
 import os
 import time
 import matplotlib
+
 matplotlib.use('Agg')
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,10 +10,12 @@ import cv2 as cv
 from pathlib import Path
 from Up_to_Domain.cal_accessarea.cnt_fn import CountUptoDomain, Point
 import sys
+
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from village_edge_dev.interfaces import edge_detect
 import config.params as param
 from ascensionpoint_generate.cal_ascensionpoints.cdld import Tools
+
 
 def interface_drawRawData(dem_path, remote_path):
     """
@@ -90,7 +93,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
         (os.path.join(param.REACHABLEIMG_PATH, os.path.basename(dem_path).split('.')[0])))
 
     # eg. ../static/result/reachableArea/reachableImg/SX3_005_QMC/30
-    timelimit_accessdomain_path = os.path.join(result_accessdomain_basepath,str(timelimit))
+    timelimit_accessdomain_path = os.path.join(result_accessdomain_basepath, str(timelimit))
 
     # eg. ../static/result/reachableArea/reachableImg/SX3_005_QMC/30/accessdomain30.png
     # The Path to locate the accessdomain of paticular timelimit 
@@ -105,8 +108,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
     time_matrix_path = os.path.join(result_accessdomain_basepath, "time_matrix.txt")
 
     viewshedmiddle_basepath = os.path.join(param.VIEWSHED_PATH,
-                                        os.path.join(os.path.basename(dem_path).split('.')[0],str(timelimit)))
-
+                                           os.path.join(os.path.basename(dem_path).split('.')[0], str(timelimit)))
 
     if os.path.exists(result_accessdomain_basepath) is False:
         os.makedirs(result_accessdomain_basepath)
@@ -124,7 +126,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
 
     ed = time.time()
 
-    print("Detecting edges: ",ed-st)
+    print("Detecting edges: ", ed - st)
 
     # 坐标转换，将从遥感图上计算出得中心点转换到dem上
     dem = Image.open(dem_path)
@@ -156,7 +158,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
         np.savetxt(time_matrix_path, time_matrix)
 
         ed = time.time()
-        print("Generating accessdomain:",ed - st)
+        print("Generating accessdomain:", ed - st)
 
     else:
         # If has calculated, read the cache directly
@@ -164,11 +166,11 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
         Ts_denglinPoint = time_matrix
 
         ed = time.time()
-        print("Generating accessdomain:",ed - st)
+        print("Generating accessdomain:", ed - st)
 
     kedayu_matrix = Ts_denglinPoint < (timelimit)
 
-    # 注意第一维坐标为y，第二维是x
+    # 注意第一维坐标为行（高度），第二维是列（宽度）
     index = np.argwhere(kedayu_matrix)
 
     # index_read = np.array([(index[:, 1][i], index[:, 0][i]) for i in range(len(index))])
@@ -177,7 +179,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
         os.makedirs(viewshedmiddle_basepath)
 
     np.savetxt(accessdomainpoint_index_path, index, fmt="%d")
-    np.savetxt(os.path.join(viewshedmiddle_basepath,"accessdomainpoint_index.txt"), index, fmt="%d")
+    np.savetxt(os.path.join(viewshedmiddle_basepath, "accessdomainpoint_index.txt"), index, fmt="%d")
 
     # Transform relative coords to longtitude/latitude
     tl = Tools()
@@ -185,8 +187,8 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
 
     # 创建在前端显示的区域范围
     west = im_geotrans[0]
-    south = im_geotrans[3] + dem.size[1]*im_geotrans[-1]
-    east = im_geotrans[0] + dem.size[0]*im_geotrans[1]
+    south = im_geotrans[3] + dem.size[1] * im_geotrans[-1]
+    east = im_geotrans[0] + dem.size[0] * im_geotrans[1]
     north = im_geotrans[3]
 
     # Generate the accessdomain

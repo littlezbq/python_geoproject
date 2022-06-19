@@ -18,7 +18,7 @@ class Tools:
 
     # Clear caches in calculating ascension point
     def clear_cache(self, filename="*", time_limit="*"):
-        import calculate_denglinPoint.config.DenglinConsts as param1
+        import config.params as param1
 
         if filename == "*":
             current_path = param1.VIEWSHED_PATH
@@ -41,27 +41,26 @@ class Tools:
 
     # 清除结果文件，需要指定清除可达域计算结果还是登临点计算结果
     def clear_result(self, mode=0, filename="*", time_limit="*"):
-        import calculate_denglinPoint.config.DenglinConsts as param1
-        import Up_to_Domain.config.UpToDomainConsts as param2
+        import config.params as param
 
         def clear_denglin(filename="*", time_limit="*"):
 
             # 删除./static/result/denglin下所有文件
             if filename == "*":
-                current_path = param1.ASCENSIONLIST_SAVEPATH
+                current_path = param.ASCENSIONLIST_SAVEPATH
                 removing(current_path)
 
             # 删除./static/result/denglin/filename下所有文件
 
             elif filename != "*" and time_limit == "*":
-                current_path = os.path.join(param1.ASCENSIONLIST_SAVEPATH, str(filename))
+                current_path = os.path.join(param.ASCENSIONLIST_SAVEPATH, str(filename))
                 removing(current_path)
 
             # 删除./static/result/denglin/filename/time_limit下所有文件
 
             elif filename != "*" and time_limit != "*":
 
-                current_path = os.path.join(param1.ASCENSIONLIST_SAVEPATH,
+                current_path = os.path.join(param.ASCENSIONLIST_SAVEPATH,
                                             os.path.join(str(filename),
                                                          str(time_limit)))
                 removing(current_path)
@@ -70,12 +69,12 @@ class Tools:
             # 暂时只清除可达域计算结果，保留源数据的展示结果
             # 清除reachableImg目录下所有村落的子文件夹
             if filename == "*":
-                current_path = param2.REACHABLEIMG_PATH
+                current_path = param.REACHABLEIMG_PATH
                 removing(current_path)
 
             # 清除reachableImg/filename下所有文件
             elif filename != "*" and time_limit == "*":
-                current_path = os.path.join(param2.REACHABLEIMG_PATH, str(filename))
+                current_path = os.path.join(param.REACHABLEIMG_PATH, str(filename))
                 removing(current_path)
 
         #     默认清除可达域和登临点所有计算结果
