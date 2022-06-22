@@ -10,7 +10,6 @@ import cv2 as cv
 from pathlib import Path
 from Up_to_Domain.cal_accessarea.cnt_fn import CountUptoDomain, Point
 import sys
-
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from village_edge_dev.interfaces import edge_detect
 import config.params as param
@@ -150,7 +149,7 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
 
         # distance_matrix = cnt_uptodomain.get_distance_matrix()
         # velocity_matrix = cnt_uptodomain.get_velocity_matrix()
-        time_matrix = cnt_uptodomain.get_time_matrix()
+        time_matrix = cnt_uptodomain.get_final_time_matrix()
 
         # 保存可达域内点信息
         Ts_denglinPoint = time_matrix

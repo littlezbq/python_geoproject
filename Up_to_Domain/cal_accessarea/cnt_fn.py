@@ -5,13 +5,17 @@ from PIL import Image
 import matplotlib
 import multiprocessing
 from multiprocessing import Pool
+
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import math
 import time
 import cv2 as cv
 from osgeo import gdal
-from tqdm import tqdm
+from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+from config.params import CORE_NUM
 
 class Point(object):
     def __init__(self, x, y):
@@ -24,10 +28,12 @@ class Point(object):
     def getY(self):
         return self.y
 
+
 class CountSlope(object):
     """
     计算DEM图像的坡度和坡向
     """
+
     def __init__(self):
         pass
 
@@ -41,7 +47,7 @@ class CountSlope(object):
         im_width = dataset.RasterXSize  # 读取图像的宽度，x方向上的像素个数
         im_height = dataset.RasterYSize  # 读取图像的高度，y方向上的像素个数
         # im_data = dataset.ReadAsArray(0, 0, im_width, im_height).astype(np.float64) # 将数据写成数组，对应栅格矩阵
-        im_data = dataset.ReadAsArray(0, 0, im_width, im_height).astype(np.float64) # 将数据写成数组，对应栅格矩阵
+        im_data = dataset.ReadAsArray(0, 0, im_width, im_height).astype(np.float64)  # 将数据写成数组，对应栅格矩阵
         return im_data
 
     def add_round(self, img_array):
@@ -83,7 +89,7 @@ class CountSlope(object):
         # dy = dy[1:-1, 1:-1]
         return dx, dy
 
-    def AddRound(self,image):
+    def AddRound(self, image):
         """
         在图像的周围填充像素，填充值与边缘像素相同
 
@@ -110,8 +116,7 @@ class CountSlope(object):
         result[-1, -1] = image[-1, 0]
         return result
 
-
-    def cal_slope(self,image, grad_we, grad_sn):
+    def cal_slope(self, image, grad_we, grad_sn):
         """
         计算一张图片的坡度，使用三阶不带权差分法计算坡度
 
@@ -136,13 +141,13 @@ class CountSlope(object):
         # kernal_sn = np.array([[-1, -2, -1],
         #                       [0, 0, 0],
         #                       [1, 2, 1]])
-        
+
         kernal_we = np.array([[-1, 0, 1],
                               [-1, 0, 1],
                               [-1, 0, 1]])
         kernal_sn = np.array([[-1, -1, -1],
-                              [0,  0,  0],
-                              [1,  1,  1]])
+                              [0, 0, 0],
+                              [1, 1, 1]])
 
         img = self.AddRound(image)
         slope_we = cv.filter2D(img, -1, kernal_we)
@@ -156,8 +161,6 @@ class CountSlope(object):
         # slope = (np.arctan(np.sqrt(slope_we * slope_we + slope_sn * slope_sn))) * 57.29578
         slope = (np.arctan(np.sqrt(slope_we * slope_we + slope_sn * slope_sn)))
         return slope
-
-
 
     def CacSlopAsp(self, dx, dy):
         """
@@ -199,10 +202,12 @@ class CountSlope(object):
         # return slope, aspect
         return slope
 
+
 class CountUptoDomain(CountSlope):
     """
     计算可达域
     """
+
     def __init__(self, file_path, point, demAxis):
         """
         :param file_path: DEM文件路径
@@ -210,7 +215,7 @@ class CountUptoDomain(CountSlope):
         :param demAxis: dem数据精度，x和y相同
         """
         super(CountUptoDomain, self).__init__()
-        self.DEM,self.im_geotrans = self.read_file(file_path)
+        self.DEM, self.im_geotrans = self.read_file(file_path)
         self.dem_list = np.argwhere(self.DEM)
         self.point = point
         self.demAxis = demAxis
@@ -220,8 +225,8 @@ class CountUptoDomain(CountSlope):
         self.final_velocity_matrix = np.zeros_like(self.DEM)
         self.time_matrix = np.zeros_like(self.DEM)
         self.big_path = []
-        self.flag = 0
-        
+        self.slope = np.zeros_like(self.DEM)
+
     def read_file(self, file_path):
         """
         读取DEM文件
@@ -235,10 +240,10 @@ class CountUptoDomain(CountSlope):
         im_width = dataset.RasterXSize  # 读取图像的宽度，x方向上的像素个数
         im_height = dataset.RasterYSize  # 读取图像的高度，y方向上的像素个数
         im_geotrans = dataset.GetGeoTransform()  # 仿射矩阵
-        im_data = dataset.ReadAsArray(0, 0, im_width, im_height).astype(np.float64) # 将数据写成数组，对应栅格矩阵
-        return im_data,im_geotrans
+        im_data = dataset.ReadAsArray(0, 0, im_width, im_height).astype(np.float64)  # 将数据写成数组，对应栅格矩阵
+        return im_data, im_geotrans
 
-    def get_sptial_distance(self,currentPoint, tmpPoint):
+    def get_sptial_distance(self, currentPoint, tmpPoint):
         space_distance = np.sqrt(
             np.square(np.abs(currentPoint.x - tmpPoint.x) * self.demAxis) +
             np.square(np.abs(currentPoint.y - tmpPoint.y) * self.demAxis)
@@ -246,7 +251,8 @@ class CountUptoDomain(CountSlope):
 
         sptial_distance = np.sqrt(
             np.square(space_distance) +
-            np.square(np.abs(self.DEM[int(currentPoint.x)][int(currentPoint.y)] - self.DEM[int(tmpPoint.x)][int(tmpPoint.y)]))
+            np.square(
+                np.abs(self.DEM[int(currentPoint.x)][int(currentPoint.y)] - self.DEM[int(tmpPoint.x)][int(tmpPoint.y)]))
         )
 
         return sptial_distance
@@ -272,7 +278,7 @@ class CountUptoDomain(CountSlope):
                 if tmpPoint.y > j:
                     paths.append([i, j])
                     j += 1
-                
+
                 if tmpPoint.x == i and tmpPoint.y == j:
                     paths.append([i, j])
                     break
@@ -286,7 +292,7 @@ class CountUptoDomain(CountSlope):
                 if tmpPoint.y > j:
                     paths.append([i, j])
                     j += 1
-                
+
                 if tmpPoint.x == i and tmpPoint.y == j:
                     paths.append([i, j])
                     break
@@ -299,7 +305,7 @@ class CountUptoDomain(CountSlope):
                 if tmpPoint.y < j:
                     paths.append([i, j])
                     j -= 1
-                
+
                 if tmpPoint.x == i and tmpPoint.y == j:
                     paths.append([i, j])
                     break
@@ -312,7 +318,7 @@ class CountUptoDomain(CountSlope):
                 if tmpPoint.y < j:
                     paths.append([i, j])
                     j -= 1
-                
+
                 if tmpPoint.x == i and tmpPoint.y == j:
                     paths.append([i, j])
                     break
@@ -325,11 +331,10 @@ class CountUptoDomain(CountSlope):
         # slope = self.CacSlopAsp(dx, dy)
         xaxis = self.demAxis
         yaxis = self.demAxis
-        slope = self.cal_slope(self.DEM, xaxis,yaxis)
+        slope = self.cal_slope(self.DEM, xaxis, yaxis)
         return slope
 
-
-    def map_all_paths(self,tpoint):
+    def map_all_paths(self, tpoint):
         '''
             Get one path of a point to centerpoint
         '''
@@ -344,32 +349,32 @@ class CountUptoDomain(CountSlope):
 
         st = time.time()
         print("Generaing all paths to centerpoint......")
-        with Pool() as p:
+        with Pool(processes=CORE_NUM) as p:
             big_path = p.map(func=self.map_all_paths, iterable=self.dem_list)
         ed = time.time()
-        print("Done!, using{:.2f} seconds".format((ed-st)))
-        
+        print("Done!, using{:.2f} seconds".format((ed - st)))
+
         self.big_path = big_path
 
-
-    def map_distance_matrix(self,tpoint):
+    def map_distance_matrix(self, tpoint):
         # print("Mapping every point in dem, getting one target point distance to centerpoint")
         sumdistance = 0
         # 获取当前点与中心点之间所有经过的点的集合
-        paths = self.get_paths(self.point, Point(tpoint[0],tpoint[1]))
-        for index in range(len(paths)-1):
-            tmp_point_sptial_distance = self.get_sptial_distance(Point(paths[index][0], paths[index][1]),Point(paths[index + 1][0], paths[index + 1][1]))
-            sumdistance = sumdistance + tmp_point_sptial_distance                
+        paths = self.get_paths(self.point, Point(tpoint[0], tpoint[1]))
+        for index in range(len(paths) - 1):
+            tmp_point_sptial_distance = self.get_sptial_distance(Point(paths[index][0], paths[index][1]),
+                                                                 Point(paths[index + 1][0], paths[index + 1][1]))
+            sumdistance = sumdistance + tmp_point_sptial_distance
 
         return sumdistance
 
         # share_result_list.append(sumdistance)
-    
-    def map_distance_matrix2(self,tpoint):
+
+    def map_distance_matrix2(self, tpoint):
         '''
             直接计算目标点到中心点的欧氏距离, no use
         '''
-        tmp_point_sptial_distance = self.get_sptial_distance(self.point, Point(tpoint[0],tpoint[1]))
+        tmp_point_sptial_distance = self.get_sptial_distance(self.point, Point(tpoint[0], tpoint[1]))
 
         return tmp_point_sptial_distance
 
@@ -377,16 +382,16 @@ class CountUptoDomain(CountSlope):
         # Create a multiprocessing pool
         st = time.time()
         print("Calculating distance matrix......")
-        with Pool() as p:
+        with Pool(processes=CORE_NUM) as p:
             # Using multiprocessing to calculate
             distance_list = p.map(func=self.map_distance_matrix, iterable=self.dem_list)
 
         ed = time.time()
-        print("Done!, using {:.2f} seconds".format((ed-st)))
-        self.distance_matrix = np.array(distance_list).reshape(self.DEM.shape[0],self.DEM.shape[1])
+        print("Done!, using {:.2f} seconds".format((ed - st)))
+        self.distance_matrix = np.array(distance_list).reshape(self.DEM.shape[0], self.DEM.shape[1])
 
         return self.distance_matrix
-        
+
     def map_relative_velocity_matrix(self, slope, tpoint):
         '''
             Calculate each point in DEM
@@ -401,7 +406,7 @@ class CountUptoDomain(CountSlope):
             velocity = 4000
 
         return velocity
-    
+
     def get_relative_velocity_matrix(self):
         '''
             Getting relative velocity matrix
@@ -409,38 +414,38 @@ class CountUptoDomain(CountSlope):
         st = time.time()
         print("Calculating relative velocity...")
 
-        with Pool() as p:
-            slope = self.get_slope()
-            funcs = partial(self.map_relative_velocity_matrix, slope)
+        with Pool(processes=CORE_NUM) as p:
+            self.slope = self.get_slope()
+            funcs = partial(self.map_relative_velocity_matrix, self.slope)
             velocity_list = p.map(func=funcs, iterable=self.dem_list)
 
         ed = time.time()
-        print("Done!,using{:.2f} seconds".format((ed-st)))
-        
-        self.relative_velocity_matrix = np.array(velocity_list).reshape(self.DEM.shape[0],self.DEM.shape[1])
+        print("Done!,using{:.2f} seconds".format((ed - st)))
+
+        self.relative_velocity_matrix = np.array(velocity_list).reshape(self.DEM.shape[0], self.DEM.shape[1])
 
     def map_final_velocity_matrix(self, tpoint):
         # Caculate the final speed by 加权平均 relative speed in paths
-        
+
         # Get the target point path index of big_path
         # print("Getting target path to centerpoint...")
-        paths = self.get_paths(self.point, Point(tpoint[0],tpoint[1]))
+        paths = self.get_paths(self.point, Point(tpoint[0], tpoint[1]))
         relative_velocity_list = []
 
         # print("Mapping every point in dem, getting one point final velocity......")
         for point in paths:
-            relative_velocity_list.append(self.relative_velocity_matrix[point[0],point[1]])
+            relative_velocity_list.append(self.relative_velocity_matrix[point[0], point[1]])
         sum = np.sum(relative_velocity_list)
 
         if sum != 0:
-            weights = np.divide(relative_velocity_list,sum)
-            final_velocity = np.average(relative_velocity_list,weights=weights)
-        
+            weights = np.divide(relative_velocity_list, sum)
+            final_velocity = np.average(relative_velocity_list, weights=weights)
+
         else:
             final_velocity = 0
 
         return final_velocity
-    
+
     def get_final_velocity_matrix(self):
         '''
             Calculate final velocity
@@ -455,17 +460,16 @@ class CountUptoDomain(CountSlope):
         st = time.time()
         # print("Calculating final velocity matrix......")
 
-        with Pool() as p:
+        with Pool(processes=CORE_NUM) as p:
             final_velocity_list = p.map(func=self.map_final_velocity_matrix, iterable=self.dem_list)
 
         ed = time.time()
-        print("Done!, using {} seconds".format((ed-st)))
-        self.final_velocity_matrix = np.array(final_velocity_list).reshape(self.DEM.shape[0],self.DEM.shape[1])
+        print("Done!, using {} seconds".format((ed - st)))
+        self.final_velocity_matrix = np.array(final_velocity_list).reshape(self.DEM.shape[0], self.DEM.shape[1])
 
         return self.final_velocity_matrix
-        
 
-    def get_time_matrix(self):
+    def map_get_time_matrix(self, tpoint):
         """
         time=paths/velocity
         :param distance: 距离
@@ -475,17 +479,40 @@ class CountUptoDomain(CountSlope):
         :return: time: 时间
         """
 
-        # Calculating final_velocity_matrix
-        self.final_velocity_matrix = self.get_final_velocity_matrix()
+        # Get the path between center point and each point on dem
+        paths = self.get_paths(self.point, Point(tpoint[0], tpoint[1]))
 
-        # Calculating distance_matrix
-        self.distance_matrix = self.get_distance_matrix()
- 
-        # Dividing two matrix above to get the time_matrix
-        self.time_matrix = np.divide(self.distance_matrix, self.final_velocity_matrix)
-        
+        total_time = 0
+        # During the path calculate distance and velocity between each two point
+        for index in range(len(paths) - 1):
+            tmp_point_sptial_distance = self.get_sptial_distance(Point(paths[index][0], paths[index][1]),
+                                                                 Point(paths[index + 1][0],
+                                                                       paths[index + 1][1])) * 1.2  # 修正系数
+            tmp_point_velocity = (self.relative_velocity_matrix[paths[index][0], paths[index][0]] +
+                                  self.relative_velocity_matrix[paths[index + 1][0], paths[index + 1][0]]) / 2
+            tmp_point_costtime = tmp_point_sptial_distance / tmp_point_velocity
+
+            total_time += tmp_point_costtime
+
+        return total_time
+
+    def get_final_time_matrix(self):
+
+    #         First calculate the slope and relative_velocity_matrix
+        self.get_relative_velocity_matrix()
+
+        st = time.time()
+        with Pool(processes=CORE_NUM) as p:
+            final_time_list = p.map(func=self.map_get_time_matrix, iterable=self.dem_list)
+
+        ed = time.time()
+        print("Done!, using {} seconds".format((ed - st)))
+        self.time_matrix = np.array(final_time_list).reshape(self.DEM.shape[0], self.DEM.shape[1])
+
         return self.time_matrix
 
+
+    def get_time_matrix_test(self):
 
 
 def test1(file_path):
@@ -506,39 +533,39 @@ def test1(file_path):
                         demAxis=demaxis
                         )
 
-
-    time_matrix = a.get_time_matrix()
+    time_matrix = a.get_final_time_matrix()
 
     et = time.time()
-    print(et-st)
+    print(et - st)
 
     x_plt = np.arange(0, time_matrix.shape[1], 1)
     y_plt = np.arange(0, time_matrix.shape[0], 1)
+    # # #
+    # fig1, ax1 = plt.subplots()
+    # ax1.invert_yaxis()  # y轴反向
+    # plt.contourf(x_plt, y_plt, a.distance_matrix, 25)
+    # plt.colorbar()
+    # # ax1.imshow(distance_matrix)
+    # plt.savefig(os.path.join(save_dir, 'distance_matrix.png'), bbox_inches="tight", pad_inches=0.0)
     # #
-    fig1, ax1 = plt.subplots()
-    ax1.invert_yaxis()  # y轴反向
-    plt.contourf(x_plt, y_plt, a.distance_matrix,25)
-    plt.colorbar()
-    # ax1.imshow(distance_matrix)
-    plt.savefig(os.path.join(save_dir,'distance_matrix.png'),bbox_inches="tight", pad_inches=0.0)
-    #
-    fig2, ax2 = plt.subplots()
-    ax2.invert_yaxis()  # y轴反向
-    plt.contourf(x_plt, y_plt, a.final_velocity_matrix, 25)
-    plt.colorbar()
-    plt.savefig(os.path.join(save_dir,'velocity_matrix.png'),bbox_inches="tight", pad_inches=0.0)
+    # fig2, ax2 = plt.subplots()
+    # ax2.invert_yaxis()  # y轴反向
+    # plt.contourf(x_plt, y_plt, a.final_velocity_matrix, 25)
+    # plt.colorbar()
+    # plt.savefig(os.path.join(save_dir, 'velocity_matrix.png'), bbox_inches="tight", pad_inches=0.0)
 
     fig3, ax3 = plt.subplots()
     ax3.invert_yaxis()  # y轴反向
     plt.contourf(x_plt, y_plt, time_matrix, 25)
     plt.colorbar()
     # ax3.imshow(time_matrix)
-    plt.savefig(os.path.join(save_dir,'time_matrix.png'),bbox_inches="tight", pad_inches=0.0)
+    plt.savefig(os.path.join(save_dir, 'time_matrix.png'), bbox_inches="tight", pad_inches=0.0)
 
     kedayu = time_matrix < (15 / 60)
     result = Image.fromarray(kedayu).convert('RGB')
 
-    result.save(os.path.join(save_dir,'kedayutest.png'))
+    result.save(os.path.join(save_dir, 'kedayutest.png'))
+
 
 def test2(file_path):
     '''
@@ -551,7 +578,7 @@ def test2(file_path):
 
     data = Image.open(file_path)
     point = Point(data.size[0] / 2, data.size[1] / 2)
-    xaxis , yaxis = 10,10
+    xaxis, yaxis = 10, 10
     a = CountUptoDomain(file_path=file_path,
                         point=point,
                         xaxis=xaxis,
@@ -559,42 +586,41 @@ def test2(file_path):
 
     time_matrix = a.get_time_matrix(mode_D=1, mode_V=0)
 
-
     x_plt = np.arange(0, time_matrix.shape[1], 1)
     y_plt = np.arange(0, time_matrix.shape[0], 1)
     # #
     fig1, ax1 = plt.subplots()
     ax1.invert_yaxis()  # y轴反向
-    plt.contourf(x_plt, y_plt, a.distance_matrix,25)
+    plt.contourf(x_plt, y_plt, a.distance_matrix, 25)
     plt.colorbar()
     # ax1.imshow(distance_matrix)
-    plt.savefig(os.path.join(save_dir,'distance_matrix.png'),bbox_inches="tight", pad_inches=0.0)
+    plt.savefig(os.path.join(save_dir, 'distance_matrix.png'), bbox_inches="tight", pad_inches=0.0)
     #
     fig2, ax2 = plt.subplots()
     ax2.invert_yaxis()  # y轴反向
     plt.contourf(x_plt, y_plt, a.velocity_matrix, 25)
     plt.colorbar()
-    plt.savefig(os.path.join(save_dir,'velocity_matrix.png'),bbox_inches="tight", pad_inches=0.0)
+    plt.savefig(os.path.join(save_dir, 'velocity_matrix.png'), bbox_inches="tight", pad_inches=0.0)
 
     fig3, ax3 = plt.subplots()
     ax3.invert_yaxis()  # y轴反向
     plt.contourf(x_plt, y_plt, time_matrix, 25)
     plt.colorbar()
     # ax3.imshow(time_matrix)
-    plt.savefig(os.path.join(save_dir,'time_matrix.png'),bbox_inches="tight", pad_inches=0.0)
+    plt.savefig(os.path.join(save_dir, 'time_matrix.png'), bbox_inches="tight", pad_inches=0.0)
 
     kedayu = time_matrix < (15 / 60)
     result = Image.fromarray(kedayu).convert('RGB')
 
-    result.save(os.path.join(save_dir,'kedayutest.png'))
-
+    result.save(os.path.join(save_dir, 'kedayutest.png'))
 
 
 if __name__ == '__main__':
     import time
+
     st = time.time()
 
     file_path = r'D:\projects\webGisProject-dev20220412\static\datasets\SX3_005_QMC.tif'
     test1(file_path)
     end = time.time()
-    print(end-st)
+    print(end - st)
