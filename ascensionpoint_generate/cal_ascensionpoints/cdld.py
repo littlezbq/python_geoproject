@@ -285,7 +285,7 @@ class CalculateVisionPoint(Tools):
             if (corrd == self.x_y).all(1).any():
                 domainPointsSimplifed.append(corrd)
 
-        with mp.Pool() as pool:
+        with mp.Pool(processes=10) as pool:
             x_y_compute = domainPointsSimplifed
 
             func = partial(self.cal_mp, self.filename, self.viewsheds_path,
@@ -331,8 +331,8 @@ class CalculateVisionPoint(Tools):
         index_latitude = im_geotrans[5]
 
         # 传入的pos第一维是行数，第二维是列数，因此需要变换一下坐标，满足坐标转换时的经纬度顺序
-        x = pos[1]
-        y = pos[0]
+        x = pos[1]#列
+        y = pos[0]#行
 
         px = start_longtitude + x * index_longitude + y * im_geotrans[2]
         py = start_latitude + x * im_geotrans[4] + y * index_latitude

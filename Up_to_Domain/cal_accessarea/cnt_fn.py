@@ -512,7 +512,12 @@ class CountUptoDomain(CountSlope):
         return self.time_matrix
 
 
-    def get_time_matrix_test(self):
+    def get_time_matrix_pre(self):
+        self.get_distance_matrix()
+        self.get_final_velocity_matrix()
+        self.time_matrix = np.divide(self.distance_matrix, self.final_velocity_matrix)
+
+        return self.time_matrix
 
 
 def test1(file_path):

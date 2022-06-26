@@ -144,10 +144,10 @@ def wyFunction1():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    app.run(port=8000)
+    # app.run(port=8000)
 
-    # from commonutils.tools import  Tools
-    # tl = Tools()
-    #
-    # tl.clear_cache()
+    from commonutils.tools import  Tools
+    tl = Tools()
+
+    tl.clear_cache()
     # tl.clear_result(0)
