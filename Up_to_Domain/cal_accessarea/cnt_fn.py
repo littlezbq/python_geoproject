@@ -572,6 +572,7 @@ def test1(file_path):
     result.save(os.path.join(save_dir, 'kedayutest.png'))
 
 
+
 def test2(file_path):
     '''
         测试2：距离矩阵计算方法为，直接计算目标点到中心点的空间欧式距离，循环计算dem中其余各点到中心点的距离，构成距离矩阵。
@@ -593,6 +594,13 @@ def test2(file_path):
 
     x_plt = np.arange(0, time_matrix.shape[1], 1)
     y_plt = np.arange(0, time_matrix.shape[0], 1)
+    # # #
+    # fig1, ax1 = plt.subplots()
+    # ax1.invert_yaxis()  # y轴反向
+    # plt.contourf(x_plt, y_plt, a.distance_matrix, 25)
+    # plt.colorbar()
+    # # ax1.imshow(distance_matrix)
+    # plt.savefig(os.path.join(save_dir, 'distance_matrix.png'), bbox_inches="tight", pad_inches=0.0)
     # #
     fig1, ax1 = plt.subplots()
     ax1.invert_yaxis()  # y轴反向

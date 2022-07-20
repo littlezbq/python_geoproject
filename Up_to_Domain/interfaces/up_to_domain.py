@@ -149,8 +149,8 @@ def interface_uptodomain(dem_path, remote_path, timelimit, demAxis):
 
         # distance_matrix = cnt_uptodomain.get_distance_matrix()
         # velocity_matrix = cnt_uptodomain.get_velocity_matrix()
-        # time_matrix = cnt_uptodomain.get_final_time_matrix()
-        time_matrix = cnt_uptodomain.get_time_matrix_pre()
+        time_matrix = cnt_uptodomain.get_final_time_matrix()
+        # time_matrix = cnt_uptodomain.get_time_matrix_pre()
         # 保存可达域内点信息
         Ts_denglinPoint = time_matrix
         # 保存时间矩阵

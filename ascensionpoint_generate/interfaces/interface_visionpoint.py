@@ -108,7 +108,7 @@ def interface_cal_exposivepoint(dem_path, cur_dis, exposive_num):
                                  os.path.join(os.path.basename(dem_path).split(".")[0], str(cur_dis)))
     for num in range(exposive_num):
         # Create an array to display how many points can see the exposive_point
-        exposive_parent_array = np.ones_like(np.array(Image.open(dem_path)))
+        # exposive_parent_array = np.ones_like(np.array(Image.open(dem_path)))
 
         # Get current exposive_point from exposivepoints_numlist_relative
         tmp_list = []
@@ -126,13 +126,16 @@ def interface_cal_exposivepoint(dem_path, cur_dis, exposive_num):
                     parent_name = file.split('.tif')[0].split('_')
                     tmp_list.append(parent_name)
 
-                    exposive_parent_array[tuple(map(int, parent_name))] = 255
+                    # exposive_parent_array[tuple(map(int, parent_name))] = 255
 
         exposive_result_path = os.path.join(param.ASCENSIONLIST_SAVEPATH,
                                             os.path.join(os.path.basename(dem_path).split(".")[0], str(cur_dis)))
         exposivepoint_parent_path = os.path.join(exposive_result_path, "exposivepoint_parent" + str(num) + ".txt")
-        exposivepoint_array_path = os.path.join(exposive_result_path, "exposivepoint_parent_array" + str(num) + ".png")
+        # exposivepoint_array_path = os.path.join(exposive_result_path, "exposivepoint_parent_array" + str(num) + ".png")
         np.savetxt(exposivepoint_parent_path, np.array(tmp_list), fmt="%s")
-        cv2.imwrite(exposivepoint_array_path, exposive_parent_array)
+        # cv2.imwrite(exposivepoint_array_path, exposive_parent_array)
 
     return exposivepoint_numlist_absolute, exposive_result_path
+
+    # np.savetxt("exposiveOfTXS.txt", exposivepoints_numlist_relative, fmt="%s")
+    # return exposivepoints_numlist_relative
