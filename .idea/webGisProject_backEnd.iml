@@ -4,6 +4,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/road_intersection/road_extraction/DenseUNet-pytorch/dataset/china_rural_roads" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/Up_to_Domain/cal_accessarea/.pytest_cache/v" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (autogis)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
