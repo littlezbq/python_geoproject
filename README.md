@@ -40,7 +40,7 @@ The main page has all function bandside above<br>
 ![主功能界面](./main_part.png)<br>
 
 Here is a short video of how to use the system:<br>
-<video src="./系统演示视频.mp4" width="480" height="320" controls>
+<video src="https://www.bilibili.com/video/BV1J84y1N7cX/?spm_id_from=333.1007.top_right_bar_window_dynamic.content.click&vd_source=ca4a0ce4c4adfc4b7443215fd94b5748" width="480" height="320" controls>
 
 ### Reference
 The deep learning part of this project modified from Bubbliiiing's repository [unet-pytorch](https://github.com/bubbliiiing/unet-pytorch.git).
