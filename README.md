@@ -2,7 +2,8 @@
 This is a project based on Python, using Flask and Cesium to build a digital terrain feature analysis system on
 traditional villages.<br>
 <br>Main functions include village edge detection, reachableArea generatation, denglinPoint calculate and exposivePoint calculate etc.
-Details for technical words are explained below.
+Details of the project are explained below.<br>
+**Notice:** the front-end part is repository [geoproject-front-end](https://github.com/littlezbq/geoproject-front-end.git)
 
 ## Project Structure
 * **Up_to_Domain**: *algorithm to calculate and generate reachableArea*.<br>
@@ -14,7 +15,7 @@ Details for technical words are explained below.
 
 * **run.py**: *main entrance to run the system*.<br>
 
-other parts like "village_space_quantization" less importance
+other parts like "village_space_quantization" will not explain due to less importance
 ## Quick Start
 ### Prerequisites
 * Python == 3.9.12
