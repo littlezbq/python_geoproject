@@ -29,17 +29,18 @@ and "anaconda show INSTALL_CHANNEL"
 ### Data preparation
 Remote Sensing data and DEM data are required for the system main algorithms.
 The remote data only requires 3-channel RGB images. The DEM data requires data based on RSG model. The two types of data 
-need to be aligned in longitude and latitude directions.
+need to be aligned in longitude and latitude directions.<br>
 
-![遥感图片](./QMC.png)<br>![DEM图片](./QMC.tif)
+![遥感图片](./QMC.png)<br>
+![DEM图片](./QMC_dem.png)<br>
 
 ### System Main Page
-The main page has all function bandside above
+The main page has all function bandside above<br>
 ![系统主界面](./main_page.png)<br>
-![主功能界面](./main_part.png)
+![主功能界面](./main_part.png)<br>
 
-Here is a short video of how to use the system:
-<video src="[./系统演示视频.mp4](%CF%B5%CD%B3%D1%DD%CA%BE%CA%D3%C6%B5.mp4)" controls="controls" width="480" height="320">
+Here is a short video of how to use the system:<br>
+<video src="./系统演示视频.mp4" width="480" height="320" controls>
 
 ### Reference
 The deep learning part of this project modified from Bubbliiiing's repository [unet-pytorch](https://github.com/bubbliiiing/unet-pytorch.git).
