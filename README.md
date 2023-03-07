@@ -44,6 +44,6 @@ Here is a short video of how to use the system:<br>
 
 
 ### Reference
-The deep learning part of this project modified from Bubbliiiing's repository [unet-pytorch](https://github.com/bubbliiiing/unet-pytorch.git).
+The deep learning part of this project are modified from Bubbliiiing's repository [unet-pytorch](https://github.com/bubbliiiing/unet-pytorch.git).
 Other part are all wrote alone.
 
