@@ -1,7 +1,6 @@
 !/.idea
 !/static
 !/Up_to_Domain/cal_accessarea/test_accessDomain/
-
 !/test.py
 !/test2.py
 !/test_dem.gephi
@@ -10,4 +9,6 @@
 !/coordinate_transform.py
 !/drawPic.py
 !/QMC-30
+!/Up_to_Domain/village_edge_dev/logs
+!/road_intersection/road_extraction/model_data
 
