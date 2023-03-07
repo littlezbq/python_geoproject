@@ -14,15 +14,34 @@ Details for technical words are explained below.
 
 * **run.py**: *main entrance to run the system*.<br>
 
-other parts like village_space_quantization holds no
+other parts like "village_space_quantization" less importance
 ## Quick Start
 ### Prerequisites
 * Python == 3.9.12
 * CUDA >= 10 <br>
-**WARNING**: Difference version of Python or other libs may cause install failed or other errors<br>
+**WARNING**: Difference version of Python or other libs may cause installation errors<br>
 
 First, create a virtual environment or install dependencies directly with:<br>
-``` pip3 install -r requirements.txt```
+``` pip3 install -r requirements.txt```<br>
+**Notice:** Some other packages installed from conda library, may use anaconda command like "anaconda search PACKAGE_NAME" 
+and "anaconda show INSTALL_CHANNEL"
 
 ### Data preparation
-There are two main data source in the project. First is the **remote and DEM** data of the village waiting for analyze; Second is the data for **village edge detection module**.
+Remote Sensing data and DEM data are required for the system main algorithms.
+The remote data only requires 3-channel RGB images. The DEM data requires data based on RSG model. The two types of data 
+need to be aligned in longitude and latitude directions.
+
+![遥感图片](![QMC.png](QMC.png))<br>![DEM图片](![QMC.tif](QMC.tif))
+
+### System Main Page
+The main page has all function bandside above
+![系统主界面](![main_page.png](main_page.png))<br>
+![主功能界面](![main_part.png](main_part.png))
+
+Here is a short video of how to use the system:
+<video src="[系统演示视频.mp4](%CF%B5%CD%B3%D1%DD%CA%BE%CA%D3%C6%B5.mp4)" controls="controls" width="480" height="320">
+
+### Reference
+The deep learning part of this project modified from Bubbliiiing's repository [unet-pytorch](https://github.com/bubbliiiing/unet-pytorch.git).
+Other part are all wrote alone.
+

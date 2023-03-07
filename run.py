@@ -252,9 +252,9 @@ def calRoadIntersection():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # app.run(port=8000)
-    app.run(debug=True, port=8000, host='127.0.0.1')
+    # app.run(debug=True, port=8000, host='127.0.0.1')
 
-    # from commonutils.tools import Tools
+    from commonutils.tools import Tools
     #
-    # Tools.clear_cache()
-    # Tools.clear_result(0)
+    Tools.clear_cache()
+    Tools.clear_result(0)
